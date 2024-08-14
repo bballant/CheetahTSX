@@ -1,12 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -25,45 +17,41 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+import Section from './components/Section';
+import SoccerField from './components/SoccerField';
+import SimpleCanvas from './components/SimpleCanvas';
 
-function Section({children, title}: SectionProps): React.JSX.Element {
+function unused(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const playerNames = new Map([
+    ['GK', 'Goalkeeper'],
+    ['LB', 'Left Back'],
+    ['CB', 'Center Back'],
+    ['RB', 'Right Back'],
+    ['LM', 'Left Midfield'],
+    ['CM', 'Center Midfield'],
+    ['RM', 'Right Midfield'],
+    ['LF', 'Left Forward'],
+    ['ST', 'Striker'],
+    ['RF', 'Right Forward'],
+  ]);
+  
   return (
     <SafeAreaView style={backgroundStyle}>
+      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <SoccerField
+          offsetX={10}
+          offsetY={10}
+          width={300}
+          height={500}
+          formation={442}
+          playerNames={playerNames}
+        />
+      </View>   
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
@@ -76,7 +64,7 @@ function App(): React.JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">
+          <Section title="Step Well.. What?">
             Edit <Text style={styles.highlight}>App.tsx</Text> to change this
             screen and then come back to see your edits.
           </Section>
@@ -96,20 +84,22 @@ function App(): React.JSX.Element {
   );
 }
 
+function App(): React.JSX.Element {
+  const isDarkMode = useColorScheme() === 'dark';
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  };
+  
+  return (
+    <SafeAreaView>
+      <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <SimpleCanvas />
+      </View>
+    </SafeAreaView>
+  );
+}
+
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
   highlight: {
     fontWeight: '700',
   },
