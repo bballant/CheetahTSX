@@ -18,6 +18,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoadingScreen from './components/LoadingScreen';
 import NewGame from './components/NewGame';
+import GameManager from './components/GameManager';
 const Stack = createStackNavigator<RootStackParamList>();
 
 import { RootStackParamList } from './components/types';
@@ -30,12 +31,21 @@ export default function App(): React.JSX.Element {
         <Stack.Screen 
           name="Loading" 
           component={LoadingScreen} 
-          options={{ title: 'Welcome to CheetahTSX' }}
+          options={{
+            title: 'Welcome to CheetahTSX',
+            headerShown: false,
+          }}
         />
         {/* New Game Screen */}
         <Stack.Screen 
           name="NewGame" 
           component={NewGame} 
+          options={{ title: 'New Game' }}
+        />
+        {/* New Game Screen */}
+        <Stack.Screen 
+          name="GameManager" 
+          component={GameManager} 
           options={{ title: 'New Game' }}
         />
       </Stack.Navigator>

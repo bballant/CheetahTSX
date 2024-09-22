@@ -16,7 +16,7 @@ function LoadingScreen(): React.JSX.Element {
 
   const handleLoadGame = () => {
     // Placeholder logic for Load Game
-    console.log('Load Game Pressed');
+    navigation.navigate('GameManager');
   };
 
   const handleManageTeams = () => {
@@ -27,7 +27,8 @@ function LoadingScreen(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       {/* Title at the top */}
-      <Text style={styles.title}>Soccer Game</Text>
+      <Text style={styles.title}>CheetahTSX</Text>
+      <Text style={styles.subtitle}>The Youth Soccer Sub Planner</Text>
 
       {/* Image centered below the title */}
       <View style={styles.imageContainer}>
@@ -57,7 +58,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
+  },
+  subtitle: {
+    fontSize: 24,
     marginBottom: 20, // Add some space between the title and image
   },
   imageContainer: {
