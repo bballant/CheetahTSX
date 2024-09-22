@@ -14,7 +14,36 @@ import {
 
 import SoccerField from './components/SoccerField';
 
-function App(): React.JSX.Element {
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import LoadingScreen from './components/LoadingScreen';
+import NewGame from './components/NewGame';
+const Stack = createStackNavigator<RootStackParamList>();
+
+import { RootStackParamList } from './components/types';
+
+export default function App(): React.JSX.Element {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Loading">
+        {/* Loading Screen */}
+        <Stack.Screen 
+          name="Loading" 
+          component={LoadingScreen} 
+          options={{ title: 'Welcome to CheetahTSX' }}
+        />
+        {/* New Game Screen */}
+        <Stack.Screen 
+          name="NewGame" 
+          component={NewGame} 
+          options={{ title: 'New Game' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+function unused(): React.JSX.Element {
   const [formation, setFormation] = useState(433);
 
   const playerNames = new Map([
@@ -56,4 +85,3 @@ function App(): React.JSX.Element {
   );
 }
 
-export default App;
