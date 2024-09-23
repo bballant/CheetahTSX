@@ -8,10 +8,6 @@ import {
 
 import {Picker} from '@react-native-picker/picker';
 
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
-
 import SoccerField from './SoccerField';
 
 function GameManager(): React.JSX.Element {
@@ -30,10 +26,9 @@ function GameManager(): React.JSX.Element {
     ['RF', 'Right Forward'],
   ]);
   
-  const backgroundStyle = Colors.darker;
 
   return (
-    <SafeAreaView style={[backgroundStyle]}>
+    <SafeAreaView>
       <View>
         {/* SoccerField component */}
         <SoccerField

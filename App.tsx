@@ -19,6 +19,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoadingScreen from './components/LoadingScreen';
 import NewGame from './components/NewGame';
 import GameManager from './components/GameManager';
+import TeamManager from './components/TeamManager';
 const Stack = createStackNavigator<RootStackParamList>();
 
 import { RootStackParamList } from './components/types';
@@ -46,7 +47,12 @@ export default function App(): React.JSX.Element {
         <Stack.Screen 
           name="GameManager" 
           component={GameManager} 
-          options={{ title: 'New Game' }}
+          options={{ title: 'Manage Games' }}
+        />
+        <Stack.Screen 
+          name="TeamManager" 
+          component={TeamManager} 
+          options={{ title: 'Manage Team' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

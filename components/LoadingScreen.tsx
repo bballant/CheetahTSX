@@ -10,18 +10,15 @@ function LoadingScreen(): React.JSX.Element {
   const navigation = useNavigation<LoadingScreenNavigationProp>();
 
   const handleNewGame = () => {
-    // Navigate to the NewGame screen
    navigation.navigate('NewGame');
   };
 
   const handleLoadGame = () => {
-    // Placeholder logic for Load Game
     navigation.navigate('GameManager');
   };
 
   const handleManageTeams = () => {
-    // Placeholder logic for Manage Teams
-    console.log('Manage Teams Pressed');
+    navigation.navigate('TeamManager');
   };
 
   return (
