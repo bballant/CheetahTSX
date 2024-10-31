@@ -1,12 +1,25 @@
 import React from 'react';
 import { SafeAreaView, View, Text, Image, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Hook for navigation
-import { RootStackParamList } from './types';
+import { RootStackParamList } from '../ts/types';
+import * as Storage from '../ts/storage';
 import { StackNavigationProp } from '@react-navigation/stack';
+
 
 type LoadingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Loading'>;
 
+async function setupTestData() {
+  const teamList = [
+    "Cheetahs FC",
+    "Tigers FC",
+    "Lions FC",
+  ]
+
+  await Storage.saveData('teamList', teamList);
+}
+
 function LoadingScreen(): React.JSX.Element {
+  setupTestData();
   const navigation = useNavigation<LoadingScreenNavigationProp>();
 
   const handleNewGame = () => {
@@ -19,6 +32,10 @@ function LoadingScreen(): React.JSX.Element {
 
   const handleManageTeams = () => {
     navigation.navigate('TeamManager');
+  };
+
+  const handleListTeams = () => {
+    navigation.navigate('TeamList');
   };
 
   return (
@@ -40,6 +57,7 @@ function LoadingScreen(): React.JSX.Element {
       <View style={styles.buttonContainer}>
         <Button title="New Game" onPress={handleNewGame} />
         <Button title="Load Game" onPress={handleLoadGame} />
+        <Button title="List Teams" onPress={handleListTeams} />
         <Button title="Manage Teams" onPress={handleManageTeams} />
       </View>
     </SafeAreaView>

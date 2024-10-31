@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View, Text, FlatList, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Modal } from 'react-native';
 
-import { Team, Player } from './types';
+import { Team, Player } from '../ts/types';
 
 const initialTeam: Team = {
   name: 'Cheetahs FC',
@@ -19,7 +19,6 @@ const TeamManager = () => {
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
   const [tempTeamName, setTempTeamName] = useState<string>(team.name);
 
-  // Function to add a new player to the team
   const addPlayer = () => {
     if (!newPlayerName || !newPlayerNumber) {
       Alert.alert('Error', 'Please enter both player name and number');
@@ -27,14 +26,13 @@ const TeamManager = () => {
     }
 
     const number = parseInt(newPlayerNumber, 10);
-    if (isNaN(number) || number <= 0) {
+    if (isNaN(number) || number < 0) {
       Alert.alert('Error', 'Please enter a valid player number');
       return;
     }
 
     const newPlayer: Player = { name: newPlayerName, number };
 
-    // Check if player number already exists
     if (team.players.find(player => player.number === number)) {
       Alert.alert('Error', 'Player with this number already exists');
       return;
@@ -45,6 +43,7 @@ const TeamManager = () => {
       players: [...prevTeam.players, newPlayer]
     }));
 
+    // resets the form
     setNewPlayerName('');
     setNewPlayerNumber('');
   };

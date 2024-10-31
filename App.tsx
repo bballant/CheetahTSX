@@ -20,9 +20,10 @@ import LoadingScreen from './components/LoadingScreen';
 import NewGame from './components/NewGame';
 import GameManager from './components/GameManager';
 import TeamManager from './components/TeamManager';
+import TeamList from './components/TeamList';
 const Stack = createStackNavigator<RootStackParamList>();
 
-import { RootStackParamList } from './components/types';
+import { RootStackParamList } from './ts/types';
 
 export default function App(): React.JSX.Element {
   return (
@@ -53,6 +54,11 @@ export default function App(): React.JSX.Element {
           name="TeamManager" 
           component={TeamManager} 
           options={{ title: 'Manage Team' }}
+        />
+        <Stack.Screen 
+          name="TeamList" 
+          component={TeamList} 
+          options={{ title: 'List Teams' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
