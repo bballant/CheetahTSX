@@ -1,14 +1,17 @@
 export type RootStackParamList = {
     Loading: undefined,
-    NewGame: undefined,
     GameManager: undefined,
     TeamManager: undefined,
-    TeamList: undefined,
+    TeamEditor: { teamName: string },
 };
 
 export type Player = {
     name: string,
     number: number,
+}
+
+export type TeamSummary = {
+    name: string,
 }
 
 export type Team = {

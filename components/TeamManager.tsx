@@ -1,150 +1,90 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, FlatList, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Modal } from 'react-native';
+import { RootStackParamList } from '../ts/types';
+import * as Storage from '../ts/storage';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { TeamSummary } from '../ts/types';
+import { useNavigation } from '@react-navigation/native';
 
-import { Team, Player } from '../ts/types';
-
-const initialTeam: Team = {
-  name: 'Cheetahs FC',
-  players: [
-    { name: 'John Doe', number: 7 },
-    { name: 'Jane Smith', number: 10 },
-    { name: 'Mike Johnson', number: 4 }
-  ]
-};
+type TeamManagerNavigationProp = StackNavigationProp<RootStackParamList, 'Loading'>;
 
 const TeamManager = () => {
-  const [team, setTeam] = useState<Team>(initialTeam);
-  const [newPlayerName, setNewPlayerName] = useState<string>('');
-  const [newPlayerNumber, setNewPlayerNumber] = useState<string>('');
-  const [isModalVisible, setModalVisible] = useState<boolean>(false);
-  const [tempTeamName, setTempTeamName] = useState<string>(team.name);
+  const navigation = useNavigation<TeamManagerNavigationProp>();
 
-  const addPlayer = () => {
-    if (!newPlayerName || !newPlayerNumber) {
-      Alert.alert('Error', 'Please enter both player name and number');
+  const [teams, setTeams] = useState<TeamSummary[]>([]);
+  const [newTeamName, setNewTeamName] = useState<string>('');
+
+  // load teams when the component mounts
+  useEffect(() => {
+    const loadTeams = async () => {
+      const storedTeams = await Storage.loadData<TeamSummary[]>('teamList');
+      if (storedTeams) {
+        setTeams(storedTeams);
+      }
+    };
+    loadTeams();
+  }, []);
+
+  // save teams whenever the teams state changes
+  useEffect(() => {
+    const saveTeams = async () => {
+      await Storage.saveData('teamList', teams);
+    };
+    saveTeams();
+  }, [teams]);
+
+  const addTeam = () => {
+    if (!newTeamName) {
+      Alert.alert('Error', 'Please enter team name');
       return;
     }
-
-    const number = parseInt(newPlayerNumber, 10);
-    if (isNaN(number) || number < 0) {
-      Alert.alert('Error', 'Please enter a valid player number');
+    if (teams.find(team => team.name === newTeamName)) {
+      Alert.alert('Error', 'Team with this name already exists');
       return;
     }
+    const newTeam: TeamSummary = { name: newTeamName };
+    setTeams(prevTeams => [...prevTeams, newTeam]);
+    setNewTeamName('');
+  }
 
-    const newPlayer: Player = { name: newPlayerName, number };
-
-    if (team.players.find(player => player.number === number)) {
-      Alert.alert('Error', 'Player with this number already exists');
-      return;
-    }
-
-    setTeam(prevTeam => ({
-      ...prevTeam,
-      players: [...prevTeam.players, newPlayer]
-    }));
-
-    // resets the form
-    setNewPlayerName('');
-    setNewPlayerNumber('');
+  const removeTeam = (name: string) => {
+    setTeams(prevTeams => ([
+      ...prevTeams.filter(team => team.name !== name)
+    ]));
   };
 
-  // Function to remove a player from the team
-  const removePlayer = (number: number) => {
-    setTeam(prevTeam => ({
-      ...prevTeam,
-      players: prevTeam.players.filter(player => player.number !== number)
-    }));
+  const handleEditTeam = (teamName: string) => {
+    navigation.navigate('TeamEditor', { teamName });
   };
 
-  // Function to open the modal for editing the team name
-  const openModal = () => {
-    setTempTeamName(team.name); // Pre-fill the modal with the current team name
-    setModalVisible(true);
-  };
-
-  // Function to close the modal
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-
-  // Function to save the new team name
-  const saveTeamName = () => {
-    setTeam(prevTeam => ({
-      ...prevTeam,
-      name: tempTeamName
-    }));
-    closeModal();
-  };
-
-  // Render function for individual players with a remove button
-  const renderPlayer = ({ item }: { item: Player }) => (
-    <View style={styles.playerContainer}>
-      <Text style={styles.playerText}>#{item.number} - {item.name}</Text>
-      <TouchableOpacity onPress={() => removePlayer(item.number)} style={styles.removeButton}>
-        <Text style={styles.removeButtonText}>Remove</Text>
+  const renderTeam = ({ item }: { item: TeamSummary }) => (
+    <View style={styles.teamContainer}>
+      <Text style={styles.teamText}>{item.name}</Text>
+      <TouchableOpacity onPress={() => handleEditTeam(item.name)} style={styles.editButton}>
+        <Text style={styles.editButtonText}>Edit</Text>
       </TouchableOpacity>
     </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Team Name with Edit Icon */}
-      <View style={styles.teamNameContainer}>
-        <Text style={styles.teamName}>
-          {team.name}
-          {/* Place the Unicode edit icon within the Text component */}
-          <Text onPress={openModal} style={styles.editIcon}> ✎</Text>
-        </Text>
-      </View>
 
-      {/* Players List */}
+      {/* Team List */}
       <FlatList
-        data={team.players}
-        keyExtractor={(item) => item.number.toString()}
-        renderItem={renderPlayer}
+        data={teams}
+        renderItem={renderTeam}
         style={styles.list}
       />
 
-      {/* Input fields for adding new players */}
       <TextInput
         style={styles.input}
-        placeholder="Player Name"
-        value={newPlayerName}
-        onChangeText={setNewPlayerName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Player Number"
-        value={newPlayerNumber}
-        onChangeText={setNewPlayerNumber}
-        keyboardType="numeric"
+        placeholder="Team Name"
+        value={newTeamName}
+        onChangeText={setNewTeamName}
       />
 
-      <Button title="Add Player" onPress={addPlayer} />
+      <Button title="Add Team" onPress={addTeam} />
 
-      {/* Modal for editing team name */}
-      <Modal
-        transparent={true}
-        animationType="slide"
-        visible={isModalVisible}
-        onRequestClose={closeModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Edit Team Name</Text>
-            <TextInput
-              style={styles.modalInput}
-              value={tempTeamName}
-              onChangeText={setTempTeamName}
-              placeholder="Enter team name"
-            />
-            <View style={styles.modalButtons}>
-              <Button title="Save" onPress={saveTeamName} />
-              <Button title="Cancel" onPress={closeModal} color="red" />
-            </View>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }
@@ -155,41 +95,31 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f5f5f5',
   },
-  teamNameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
   teamName: {
     fontSize: 24,
     fontWeight: 'bold',
     marginRight: 10,
   },
-  editIcon: {
-    fontSize: 16,
-    color: 'blue', // Styling for the Unicode icon
-  },
   list: {
     marginTop: 10,
   },
-  playerContainer: {
+  teamContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
-  playerText: {
+  teamText: {
     fontSize: 18,
   },
-  removeButton: {
+  editButton: {
     backgroundColor: 'pink',
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 5,
   },
-  removeButtonText: {
+  editButtonText: {
     color: 'white',
     fontSize: 10,
   },
@@ -200,35 +130,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginBottom: 10,
     borderRadius: 5,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    width: 300,
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-  },
-  modalTitle: {
-    fontSize: 20,
-    marginBottom: 10,
-    fontWeight: 'bold',
-  },
-  modalInput: {
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
 });
 

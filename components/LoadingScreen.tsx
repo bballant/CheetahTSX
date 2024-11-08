@@ -1,32 +1,27 @@
 import React from 'react';
 import { SafeAreaView, View, Text, Image, Button, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Hook for navigation
+import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../ts/types';
 import * as Storage from '../ts/storage';
 import { StackNavigationProp } from '@react-navigation/stack';
-
+import { TeamSummary } from '../ts/types';
 
 type LoadingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Loading'>;
 
 async function setupTestData() {
   const teamList = [
-    "Cheetahs FC",
-    "Tigers FC",
-    "Lions FC",
+    {name: "Cheetahs FC"},
+    {name: "Tigers FC"},
+    {name: "Lions FC"},
   ]
-
   await Storage.saveData('teamList', teamList);
 }
 
 function LoadingScreen(): React.JSX.Element {
-  setupTestData();
+  Storage.saveData('teamList', []);
   const navigation = useNavigation<LoadingScreenNavigationProp>();
 
-  const handleNewGame = () => {
-   navigation.navigate('NewGame');
-  };
-
-  const handleLoadGame = () => {
+  const handleManageGames = () => {
     navigation.navigate('GameManager');
   };
 
@@ -34,30 +29,21 @@ function LoadingScreen(): React.JSX.Element {
     navigation.navigate('TeamManager');
   };
 
-  const handleListTeams = () => {
-    navigation.navigate('TeamList');
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      {/* Title at the top */}
       <Text style={styles.title}>CheetahTSX</Text>
       <Text style={styles.subtitle}>The Youth Soccer Sub Planner</Text>
 
-      {/* Image centered below the title */}
       <View style={styles.imageContainer}>
         <Image
           source={require('./images/cheetah.png')}
           style={styles.image}
-          resizeMode="contain" // Ensures the image scales appropriately
+          resizeMode="contain"
         />
       </View>
 
-      {/* Buttons */}
       <View style={styles.buttonContainer}>
-        <Button title="New Game" onPress={handleNewGame} />
-        <Button title="Load Game" onPress={handleLoadGame} />
-        <Button title="List Teams" onPress={handleListTeams} />
+        <Button title="Manage Games" onPress={handleManageGames} />
         <Button title="Manage Teams" onPress={handleManageTeams} />
       </View>
     </SafeAreaView>
@@ -67,8 +53,8 @@ function LoadingScreen(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center', // Vertically center content
-    alignItems: 'center', // Horizontally center content
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#f5f5f5',
   },
   title: {
@@ -77,22 +63,22 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 24,
-    marginBottom: 20, // Add some space between the title and image
+    marginBottom: 20,
   },
   imageContainer: {
-    width: '80%', // Allow the image to be centered with some border
+    width: '80%',
     alignItems: 'center',
-    marginBottom: 30, // Space between image and buttons
+    marginBottom: 30,
   },
   image: {
-    width: 663, // Original width
-    height: 400, // Original height
-    maxWidth: '100%', // Ensures image is responsive and doesn't overflow
+    width: 663,
+    height: 400,
+    maxWidth: '100%',
   },
   buttonContainer: {
     width: '80%',
     justifyContent: 'space-between',
-    height: 150,
+    height: 80,
   },
 });
 

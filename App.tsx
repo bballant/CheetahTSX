@@ -20,7 +20,7 @@ import LoadingScreen from './components/LoadingScreen';
 import NewGame from './components/NewGame';
 import GameManager from './components/GameManager';
 import TeamManager from './components/TeamManager';
-import TeamList from './components/TeamList';
+import TeamEditor from './components/TeamEditor';
 const Stack = createStackNavigator<RootStackParamList>();
 
 import { RootStackParamList } from './ts/types';
@@ -30,80 +30,30 @@ export default function App(): React.JSX.Element {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Loading">
         {/* Loading Screen */}
-        <Stack.Screen 
-          name="Loading" 
-          component={LoadingScreen} 
+        <Stack.Screen
+          name="Loading"
+          component={LoadingScreen}
           options={{
             title: 'Welcome to CheetahTSX',
             headerShown: false,
           }}
         />
-        {/* New Game Screen */}
-        <Stack.Screen 
-          name="NewGame" 
-          component={NewGame} 
-          options={{ title: 'New Game' }}
-        />
-        {/* New Game Screen */}
-        <Stack.Screen 
-          name="GameManager" 
-          component={GameManager} 
+        <Stack.Screen
+          name="GameManager"
+          component={GameManager}
           options={{ title: 'Manage Games' }}
         />
-        <Stack.Screen 
-          name="TeamManager" 
-          component={TeamManager} 
-          options={{ title: 'Manage Team' }}
+        <Stack.Screen
+          name="TeamManager"
+          component={TeamManager}
+          options={{ title: 'Manage Teams' }}
         />
-        <Stack.Screen 
-          name="TeamList" 
-          component={TeamList} 
-          options={{ title: 'List Teams' }}
+        <Stack.Screen
+          name="TeamEditor"
+          component={TeamEditor}
+          options={{ title: 'Edit Team' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-function unused(): React.JSX.Element {
-  const [formation, setFormation] = useState(433);
-
-  const playerNames = new Map([
-    ['GK', 'Goalkeeper'],
-    ['LB', 'Left Back'],
-    ['CB', 'Center Back'],
-    ['RB', 'Right Back'],
-    ['LM', 'Left Midfield'],
-    ['CM', 'Center Midfield'],
-    ['RM', 'Right Midfield'],
-    ['LF', 'Left Forward'],
-    ['ST', 'Striker'],
-    ['RF', 'Right Forward'],
-  ]);
-  
-  const backgroundStyle = Colors.darker;
-
-  return (
-    <SafeAreaView style={[backgroundStyle]}>
-      <View>
-        {/* SoccerField component */}
-        <SoccerField
-          formation={formation}
-          playerNames={playerNames}
-        />
-      </View>
-
-      <View>
-        <Picker
-          selectedValue={formation}
-          onValueChange={(v) => setFormation(v)}
-          style={{ height: 50, width: 150 }}
-        >
-          <Picker.Item label="4-3-3" value={433} />
-          <Picker.Item label="4-4-2" value={442} />
-        </Picker>
-      </View>
-    </SafeAreaView>
-  );
-}
-
